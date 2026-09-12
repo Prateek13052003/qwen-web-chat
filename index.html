@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qwen Chat</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.5/dist/purify.min.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <button class="new-chat-btn" id="newChatBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      New chat
+    </button>
+    <div class="chat-list" id="chatList"></div>
+    <div class="sidebar-footer">
+      <button class="footer-btn" id="settingsBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2"/></svg>
+        Connection settings
+      </button>
+      <div class="conn-status" id="connStatus">
+        <span class="dot" id="connDot"></span>
+        <span id="connLabel">Not connected</span>
+      </div>
+    </div>
+  </aside>
+
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-title" id="chatTitle">New chat</div>
+      <select id="modelSelect" class="model-select">
+        <option value="">Select model…</option>
+      </select>
+    </header>
+
+    <div class="messages" id="messages">
+      <div class="empty-state" id="emptyState">
+        <h1>Qwen Chat</h1>
+        <p>Connect to your Kaggle-hosted model to start chatting.</p>
+        <button class="cta-btn" id="emptyStateSettingsBtn">Set up connection</button>
+      </div>
+    </div>
+
+    <div class="composer">
+      <div class="composer-inner">
+        <textarea id="messageInput" placeholder="Message the model…" rows="1"></textarea>
+        <button id="sendBtn" class="send-btn" title="Send">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button id="stopBtn" class="stop-btn hidden" title="Stop generating">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+        </button>
+      </div>
+      <div class="composer-hint">Enter to send · Shift+Enter for a new line</div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay hidden" id="settingsOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Connection settings</h2>
+      <button class="icon-btn" id="closeSettingsBtn">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-hint">
+        Paste the values printed by the Kaggle notebook's "Copy these values into Cline / Hermes Agent" cell.
+      </p>
+      <label>Base URL</label>
+      <input type="text" id="baseUrlInput" placeholder="https://xxxx-xx-xx-xx-xx.ngrok-free.app/v1">
+
+      <label>API key</label>
+      <input type="password" id="apiKeyInput" placeholder="Session API key">
+
+      <label>Model ID <span class="optional">(fetched automatically, or set manually)</span></label>
+      <input type="text" id="modelIdInput" placeholder="e.g. Qwen3.8-27B-Uncensored-Q6_K">
+
+      <div class="modal-actions">
+        <button id="testConnBtn" class="secondary-btn">Test connection</button>
+        <span id="testConnResult" class="test-result"></span>
+      </div>
+
+      <label>System prompt <span class="optional">(optional)</span></label>
+      <textarea id="systemPromptInput" rows="3" placeholder="You are a helpful assistant."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button id="clearAllBtn" class="danger-btn">Clear all chats</button>
+      <button id="saveSettingsBtn" class="primary-btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
